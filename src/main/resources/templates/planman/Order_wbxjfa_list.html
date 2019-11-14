@@ -1,0 +1,97 @@
+<!DOCTYPE HTML>
+<html lang="en"  xmlns:th="http://www.thymeleaf.org"><head th:replace="~{public::header('aa')}">
+  <SCRIPT language=JAVASCRIPT>
+      function prosave(){
+          window.document.location="category_save.html";
+      }
+      function mydelete(obj)
+      {
+          if(confirm("您确定删除本商品？"))
+          {
+              var myobj=obj.parentNode.parentNode.parentNode;
+              var myrow=obj.parentNode.parentNode;
+              myobj.deleteRow(myrow.rowIndex);
+          }
+      }
+  </SCRIPT>
+
+  <META http-equiv=Content-Language content=zh-cn>
+  <META http-equiv=Content-Type content="text/html; charset=utf-8">
+  <META content="MSHTML 6.00.2900.5626" name=GENERATOR>
+  <META content=FrontPage.Editor.Document name=ProgId><LINK
+        href="css/style.css" rel=stylesheet>
+</HEAD>
+<BODY>
+<CENTER>
+  <FORM name=form action="" method=post>
+    <H2><FONT color=#0070c0>未编采购计划的需求一览表</FONT></H2>
+    <script type="text/javascript" th:inline="none">
+        var url;
+        $(function () {
+            $('#dg').datagrid({
+                url:'/ShowOrdersByState',
+                method:'get',
+                pagination:true,  //分页工具栏
+                rownumbers:true,  //显示行号
+                rownumbers : false,//行号
+                selectOnCheck:true,
+                singleSelect: true,
+                selectOnCheck:true,
+                rownumbers:true,
+                pageSize:4,
+                pageList:[2,4,6,8,10],
+                columns:[[
+                    {field:'bb',title:'选择',width:80,checkbox:true},
+                    {field:'MATERIAL_CODE',title:'产品编码',width:200,formatter: function(value,row,index){
+                        var a="<a href=\"/ShowItemsOrder?id="+row.ID+"\">"+value+"</a>";
+                        return a;
+                        }},
+                    {field:'MATERIAL_NAME',title:'产品名称',width:200,align:'right'},
+                    {field:'AMOUNT',title:'数量',width:200},
+                    {field:'UNIT_PRICE',title:'预算价格',width:200},
+                    {field:'START_DATE',title:'需求时间',width:200},
+                ]],
+                onLoadSuccess: function () {   //隐藏表头的checkbox
+                    $("#dg").parent().find("div .datagrid-header-check").children("input[type=\"checkbox\"]").eq(0).attr("style", "display:none;");
+                },
+            });
+        })
+        //搜索
+        function formeSearch() {
+            $('#dg').datagrid({
+                queryParams: {materialCode:$('#materialCode').val(),materialName:$('#materialName').val(),address:$('#status').val()}
+            });
+        }
+
+    </script>
+    <div>
+      <form id="searchForm">
+        产品编码：<input type="text" id="materialCode" name="materialCode">
+        产品名称：<input type="text" id="materialName" name="materialName">
+        排序:<select id="status"  class="easyui-combobox" style="width: 200px;">
+        <option value="o.MATERIAL_CODE">物资编码</option>
+        <option value="o.END_DATE">需求时间</option>
+        <option value="o.AMOUNT">需求数量</option>
+      </select>
+        <a id="btnSearch" href="#" class="easyui-linkbutton" onclick="formeSearch()" data-options="iconCls:'icon-search'">搜索</a>
+      </form>
+    </div>
+    <table id="dg"></table>
+
+    <a id="Next" href="#" class="easyui-linkbutton" onclick="Next()">编制采购计划</a>
+
+    <script>
+
+      function Next() {
+          var row= $("#dg").datagrid("getSelections");
+          if(row.length>0){
+              var rows=$("#dg").datagrid("getSelected");
+              location.href="/ItemsStock?id="+rows.ID+"&mid="+rows.MATERIAL_CODE+"&iID="+rows.iID;
+          }else{
+              $.messager.alert("系统信息","至少选择一行");
+          }
+
+      }
+
+    </script>
+</BODY></HTML>

@@ -1,0 +1,72 @@
+<!DOCTYPE HTML>
+<html lang="en"  xmlns:th="http://www.thymeleaf.org"><head th:replace="~{public::header('aa')}">
+	<SCRIPT language=JAVASCRIPT>
+        function prosave(){
+            window.document.location="category_save.html";
+        }
+        function mydelete(obj)
+        {
+            if(confirm("您确定删除本商品？"))
+            {
+                var myobj=obj.parentNode.parentNode.parentNode;
+                var myrow=obj.parentNode.parentNode;
+                myobj.deleteRow(myrow.rowIndex);
+            }
+        }
+	</SCRIPT>
+
+	<META http-equiv=Content-Language content=zh-cn>
+	<META http-equiv=Content-Type content="text/html; charset=utf-8">
+	<META content="MSHTML 6.00.2900.5626" name=GENERATOR>
+	<META content=FrontPage.Editor.Document name=ProgId><LINK
+		href="css/style.css" rel=stylesheet>
+</HEAD>
+<BODY>
+<CENTER>
+	<FORM name=form action="" method=post>
+		<H2><FONT color=#0070c0>供应商产品一览表</FONT></H2>
+		<script type="text/javascript" th:inline="none">
+            var url;
+            $(function () {
+                $('#dg').datagrid({
+                    url:'/findAllMaterial',
+                    method:'post',
+                    pagination:true,  //分页工具栏
+                    rownumbers:true,  //显示行号
+                    rownumbers : false,//行号
+                    selectOnCheck:true,
+                    singleSelect: true,
+                    selectOnCheck:true,
+                    rownumbers:true,
+                    pageSize:4,
+                    pageList:[2,4,6,8,10],
+                    columns:[[
+                        {field:'materialNum',title:'类型编号',width:300},
+                        {field:'materialName',title:'类型名称',width:200},
+                        {field:'COMPANY',title:'供应商类别',width:300,align:'right',formatter:function (value,row,index) {
+                   				return "未知";
+                }},
+                        {field:'materialType',title:'统一类别编号',width:300},
+                    ]],
+                    onLoadSuccess: function () {   //隐藏表头的checkbox
+                        $("#dg").parent().find("div .datagrid-header-check").children("input[type=\"checkbox\"]").eq(0).attr("style", "display:none;");
+                    },
+                });
+            })
+            //搜索
+            function formeSearch() {
+                $('#dg').datagrid({
+                    queryParams: {supplierNum:$('#supplierNum').val()}
+                });
+            }
+
+		</script>
+		<div>
+			<form id="searchForm">
+				类型编号：<input type="text" id="supplierNum" name="supplierNum">
+				<a id="btnSearch" href="#" class="easyui-linkbutton" onclick="formeSearch()" data-options="iconCls:'icon-search'">搜索</a>
+			</form>
+		</div>
+		<table id="dg"></table>
+
+</BODY></HTML>

@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head th:replace="~{public::header('导航栏')}"></head>
+<body>
+<script type="text/javascript">
+    $(function () {
+        $.ajax({
+            url:"/gettree",
+            type:"get",
+            dataType:"JSON",
+            success:function (data) {
+                $(data).each(function (index,menu) {
+                    //构建一级菜单
+                    if(menu.parentId == 1){
+                        $("#myAccordion").accordion("add",{
+                            id:"first"+menu.id, //给一级菜单取id
+                            title:menu.text
+                        });
+                        //根据动态生成的一级菜单id，动态添加ul，给ul取id
+                        $("#first"+menu.id).html("<ul id='myTree"+menu.id+"'style='margin-top: 5px'></ul>");
+                        //将动态创建处理的ul渲染成tree
+                        $("#first"+menu.id).tree({
+                            data:menu.children, //加载一级菜单中的子元素集合
+                            onClick:function (node) {
+                                //判断节点的属性或url为空，则不创建
+                                if(node.attributes == null || node.attributes.likeurl == null){
+                                    return ;
+                                }
+                                //判断选项卡是否已经存在
+                                if($("#tbs").tabs("exists",node.text)){
+                                    //存在则选中
+                                    $("#tbs").tabs("select",node.text);
+                                }else{
+                                    //不存在则创建选项卡
+                                    $("#tbs").tabs("add",{
+                                        title:node.text,
+                                        selected:true,
+                                        closable:true,
+                                        content:"<iframe src='"+node.attributes.likeurl+"' style='width: 100%;height: 98%' frameborder='0'></iframe>"
+                                    });
+                                }
+                            }
+                        });
+                    }
+                })
+            },
+            error:function () {
+                alert("出错了");
+            }
+        })
+    })
+
+
+</script>
+<div id="myAccordion" class="easyui-accordion" style="width: 500px;px;height:300px;" data-options="fit:'true'"></div>
+</body>
+</html>

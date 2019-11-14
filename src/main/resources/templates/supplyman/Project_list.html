@@ -1,0 +1,84 @@
+<!DOCTYPE HTML>
+<html lang="en"  xmlns:th="http://www.thymeleaf.org"><head th:replace="~{public::header('aa')}">
+    <SCRIPT language=JAVASCRIPT>
+        function prosave(){
+            window.document.location="category_save.html";
+        }
+        function mydelete(obj)
+        {
+            if(confirm("您确定删除本商品？"))
+            {
+                var myobj=obj.parentNode.parentNode.parentNode;
+                var myrow=obj.parentNode.parentNode;
+                myobj.deleteRow(myrow.rowIndex);
+            }
+        }
+    </SCRIPT>
+
+    <META http-equiv=Content-Language content=zh-cn>
+    <META http-equiv=Content-Type content="text/html; charset=utf-8">
+    <META content="MSHTML 6.00.2900.5626" name=GENERATOR>
+    <META content=FrontPage.Editor.Document name=ProgId><LINK
+        href="css/style.css" rel=stylesheet>
+</HEAD>
+<BODY>
+<CENTER>
+    <FORM name=form action="" method=post>
+        <H2><FONT color=#0070c0>报价维护</FONT></H2>
+        <script type="text/javascript" th:inline="none">
+            var url;
+            $(function () {
+                $('#dg').datagrid({
+                    url:'/ShowQuote',
+                    method:'post',
+                    pagination:true,  //分页工具栏
+                    rownumbers:true,  //显示行号
+                    pageList:[2,4,6,8,10],
+                    columns:[[
+                        {field:'ID',title:'编号',width:250,hidden:true},
+                        {field:'QueTitle',title:'报价书标题',width:250},
+                        {field:'QueDate',title:'报价提交时间',width:250,align:'right'},
+                        {field:'EnquireName',title:'对应询价书',width:250},
+                        {field:'EndDate',title:'询价截止时间',width:250},
+                        {field:'StockType',title:'采购类型',width:200,formatter: function(value,row,index){
+                                if (row.StockType=="C000-1"){
+                                    return "公开求购";
+                                } else {
+                                    return "定向询价";
+                                }
+                            }
+                        },
+                        {field:'op',title:'操作',width:110,formatter: function(value,row,index){
+                            var a;
+                            a="<a onclick='deletea("+row.ID+")'><img src=\"image/bt_del.gif\"></a>&nbsp;&nbsp;<a href=\"/findQuoteItems?id="+row.ID+"\"><img src=\"image/33.gif\"></a>";
+                            return a;
+                            }
+                        },
+                    ]]
+                });
+            })
+
+            //删除
+            function deletea(id){
+                var faly= confirm("确定要删除吗?");
+                if(faly){
+                    location.href="/deleteQuote?id="+id;
+                }
+            }
+
+            //搜索
+            function formeSearch() {
+                $('#dg').datagrid({
+                    queryParams: {QueTitle:$('#QueTitle').val(),cName:$('#cName').val(),EnquireName:$('#EnquireName').val()}
+                });
+            }
+
+        </script>
+        <div>
+            <form id="searchForm">
+                报价书名称：<input type="text" id="QueTitle" name="QueTitle">
+                对应询价书名称：<input type="text" id="EnquireName" name="EnquireName">
+                <a id="btnSearch" href="#" class="easyui-linkbutton" onclick="formeSearch()" data-options="iconCls:'icon-search'">搜索</a>
+            </form>
+        </div>
+        <table id="dg"></table></CENTER></CENTER></BODY></HTML>

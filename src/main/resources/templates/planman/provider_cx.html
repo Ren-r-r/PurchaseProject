@@ -1,0 +1,103 @@
+<!DOCTYPE HTML>
+<html lang="en"  xmlns:th="http://www.thymeleaf.org"><head th:replace="~{public::header('aa')}">
+  <SCRIPT language=JAVASCRIPT>
+      function prosave(){
+          window.document.location="category_save.html";
+      }
+      function mydelete(obj)
+      {
+          if(confirm("您确定删除本商品？"))
+          {
+              var myobj=obj.parentNode.parentNode.parentNode;
+              var myrow=obj.parentNode.parentNode;
+              myobj.deleteRow(myrow.rowIndex);
+          }
+      }
+  </SCRIPT>
+
+  <META http-equiv=Content-Language content=zh-cn>
+  <META http-equiv=Content-Type content="text/html; charset=utf-8">
+  <META content="MSHTML 6.00.2900.5626" name=GENERATOR>
+  <META content=FrontPage.Editor.Document name=ProgId><LINK
+        href="css/style.css" rel=stylesheet>
+</HEAD>
+<BODY>
+<CENTER>
+  <FORM name=form action="" method=post>
+    <H2><FONT color=#0070c0>供应商信息一览表</FONT></H2>
+    <script type="text/javascript" th:inline="none">
+        var url;
+        $(function () {
+            $('#dg').datagrid({
+                url:'/findSupplierAndUser',
+                method:'get',
+                pagination:true,  //分页工具栏
+                rownumbers:true,  //显示行号
+                rownumbers : false,//行号
+                selectOnCheck:true,
+                singleSelect: true,
+                selectOnCheck:true,
+                rownumbers:true,
+                pageSize:4,
+                pageList:[2,4,6,8,10],
+                columns:[[
+                    {field:'bb',title:'选择',width:100,checkbox:true},
+                    {field:'SUPPLIER_NUM',title:'供应商编号',width:300},
+                    {field:'COMPANY',title:'公司名称',width:300,align:'right'},
+                    {field:'LOGIN_ID',title:'登录名',width:300},
+                    {field:'ACHIEVEMENT',title:'业绩列表',width:200},
+                ]],
+                onLoadSuccess: function () {   //隐藏表头的checkbox
+                    $("#dg").parent().find("div .datagrid-header-check").children("input[type=\"checkbox\"]").eq(0).attr("style", "display:none;");
+                },
+            });
+        })
+        //搜索
+        function formeSearch() {
+            $('#dg').datagrid({
+                queryParams: {supplierNum:$('#supplierNum').val(),company:$('#company').val(),UserName:$('#UserName').val()}
+            });
+        }
+
+    </script>
+    <div>
+      <form id="searchForm">
+        供应商编号：<input type="text" id="supplierNum" name="supplierNum">
+        公司名称:<input type="text" id="company" name="company">
+        登录名:<input type="text" id="UserName" name="UserName">
+        <a id="btnSearch" href="#" class="easyui-linkbutton" onclick="formeSearch()" data-options="iconCls:'icon-search'">搜索</a>
+      </form>
+    </div>
+    <table id="dg"></table>
+
+    <a id="Next" href="#" class="easyui-linkbutton" onclick="xinx()">基本信息</a>
+    <a  href="#" class="easyui-linkbutton" onclick="items()" >注册信息</a>
+
+    <script>
+
+        //基本信息
+        function xinx() {
+            var row= $("#dg").datagrid("getSelections");
+            if(row.length>0){
+                var rows=$("#dg").datagrid("getSelected");
+                location.href="/ShowBySupplierId?id="+rows.ID;
+            }else{
+                $.messager.alert("系统信息","至少选择一行");
+            }
+
+        }
+
+        //注册信息
+        function items() {
+            var row= $("#dg").datagrid("getSelections");
+            if(row.length>0){
+                var rows=$("#dg").datagrid("getSelected");
+                location.href="/ShowByUser?id="+rows.eid;
+            }else{
+                $.messager.alert("系统信息","至少选择一行");
+            }
+
+        }
+
+    </script>
+</BODY></HTML>

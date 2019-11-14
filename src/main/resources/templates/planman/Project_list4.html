@@ -1,0 +1,104 @@
+<!DOCTYPE HTML>
+<html lang="en"  xmlns:th="http://www.thymeleaf.org"><head th:replace="~{public::header('aa')}">
+    <SCRIPT language=JAVASCRIPT>
+        function prosave(){
+            window.document.location="category_save.html";
+        }
+        function mydelete(obj)
+        {
+            if(confirm("您确定删除本商品？"))
+            {
+                var myobj=obj.parentNode.parentNode.parentNode;
+                var myrow=obj.parentNode.parentNode;
+                myobj.deleteRow(myrow.rowIndex);
+            }
+        }
+    </SCRIPT>
+
+    <META http-equiv=Content-Language content=zh-cn>
+    <META http-equiv=Content-Type content="text/html; charset=utf-8">
+    <META content="MSHTML 6.00.2900.5626" name=GENERATOR>
+    <META content=FrontPage.Editor.Document name=ProgId><LINK
+        href="css/style.css" rel=stylesheet>
+</HEAD>
+<BODY>
+<CENTER>
+    <FORM name=form action="" method=post>
+        <H2><FONT color=#0070c0>未下达采购计划一览表</FONT></H2>
+        <script type="text/javascript" th:inline="none">
+            var url;
+            $(function () {
+                $('#dg').datagrid({
+                    url:'/findStockByC5',
+                    method:'get',
+                    pagination:true,  //分页工具栏
+                    rownumbers:true,  //显示行号
+                    rownumbers : false,//行号
+                    selectOnCheck:true,
+                    singleSelect: true,
+                    selectOnCheck:true,
+                    rownumbers:true,
+                    pageSize:4,
+                    pageList:[2,4,6,8,10],
+                    columns:[[
+                        {field:'bb',title:'选择',width:100,checkbox:true},
+                        {field:'STOCK_NAME',title:'采购计划名称',width:250},
+                        {field:'STOCK_TYPE',title:'采购类型',width:250,align:'right',formatter:function (value,row,index) {
+                                if(value=="C000-1"){
+                                    return "公开求购";
+                                }else{
+                                    return "定向询价";
+                                }
+                            }},
+                        {field:'STATUS',title:'采购进度',width:200,formatter:function (value,row,index) {
+                                if(value=="C001-50"){
+                                    return "<p style=\"color:blue\">采购计划未下达</p>";
+                                }
+                            }},
+                        {field:'SUBMIT_DATE',title:'采购计划下达时间',width:300},
+                        {field:'END_DATE',title:'计划报价截止时间',width:280},
+                    ]],
+                    onLoadSuccess: function () {   //隐藏表头的checkbox
+                        $("#dg").parent().find("div .datagrid-header-check").children("input[type=\"checkbox\"]").eq(0).attr("style", "display:none;");
+                    },
+                });
+            })
+        </script>
+        <table id="dg"></table>
+        <a id="Next" href="#" class="easyui-linkbutton" onclick="items()">打开</a>
+        <a  href="#" class="easyui-linkbutton" onclick="xiada()" >下达</a>
+
+        <script>
+            //打开
+            function items() {
+                var row= $("#dg").datagrid("getSelections");
+                if(row.length>0){
+                    var rows=$("#dg").datagrid("getSelected");
+                    location.href="/findStockAndOrder?id="+rows.ID+"&oid="+rows.ORDER_ID;
+                }else{
+                    $.messager.alert("系统信息","至少选择一行");
+                }
+
+            }
+
+            //下达
+            function xiada() {
+                var row= $("#dg").datagrid("getSelections");
+                if(row.length>0){
+                        var rows=$("#dg").datagrid("getSelected");
+                        $.ajax({
+                            url:"/UpdateIdMappingC6",
+                            type:"get",
+                            data:"iid="+rows.iID+"&id="+rows.ID,
+                            success:function (data) {
+                                //刷新数据表格
+                                $('#dg').datagrid('reload');
+                            }
+                        })
+                }else{
+                    $.messager.alert("系统信息","至少选择一行");
+                }
+
+            }
+        </script>
+</BODY></HTML>

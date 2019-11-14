@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en"  xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{public::header('务资采购电子商务系统')}"></head>
+<body class="easyui-layout">
+
+<!-- 上面 -->
+<div data-options="region:'north',border:false" style="height:45px;background:#B3DFDA;">
+    <div id="zx">
+        <a href="login.html">注销</a>
+    </div>
+    <div id="fudong">
+        <label> 欢迎您：</label>
+        <label>[[${session.users.loginId}]]</label>
+    </div>
+</div>
+
+    <!-- 左边:手风琴效果 -->
+    <div data-options="region:'west',split:true,title:'务资采购电子商务系统',href:'/nav'" style="width:250px;">
+        <ul id="ryz"></ul>
+    </div>
+
+    <!-- 中间 -->
+    <div data-options="region:'center',title:''">
+        <div id="tbs" class="easyui-tabs" style="width:700px;height:250px" data-options="fit:'true'">
+
+        </div>
+    </div>
+    <!-- 下面 -->
+    <div data-options="region:'south',border:false" style="height:50px;background:#A9FACD;padding:10px;text-align: center">©2019 Baidu 使用百度前必读 意见反馈 京ICP证030173号  京公网安备11000002000001号
+    </div>
+
+    <script>
+        //页面加载完成
+        $(document).ready(function(){
+            $("#tbs").tabs("add",{
+                title:"当前工作提示",
+                href:"mainRequire"
+            });
+        });
+    </script>
+<style>
+    label{
+        color: #0c7cd5;
+    }
+    #fudong{
+        float: right;
+        padding: 10px;
+    }
+    #zx{
+        float: left;
+        padding: 10px;
+    }
+</style>
+
+</body>
+</html>

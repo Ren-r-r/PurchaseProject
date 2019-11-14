@@ -1,0 +1,60 @@
+<!DOCTYPE HTML>
+<HTML lang="en"  xmlns:th="http://www.thymeleaf.org"><head th:replace="~{public::header('aa')}"><HEAD><TITLE>查看合同</TITLE>
+<META http-equiv=Content-Language content=zh-cn>
+<META http-equiv=Content-Type content="text/html; charset=utf-8">
+  <LINK href="css/style.css" rel=stylesheet>
+<SCRIPT language=JavaScript 
+src="css/pub_Calendar.js"></SCRIPT>
+
+<META content="MSHTML 6.00.2900.5626" name=GENERATOR></HEAD>
+<BODY>
+<CENTER><H2><FONT color=#0070c0>查看合同</FONT></H2>
+  <script type="text/javascript" th:inline="none">
+      var url;
+      $(function () {
+          $('#dg').datagrid({
+              url:'/findContractByEId',
+              method:'post',
+              pagination:true,  //分页工具栏
+              rownumbers:true,  //显示行号
+              pageList:[2,4,6,8,10],
+              columns:[[
+                  {field:'id',title:'编号',width:150,hidden:true},
+                  {field:'contNum',title:'合同号',width:300,formatter: function(value,row,index){
+                      var a="<a onclick='ShowContra("+row.id+")'>"+value+"</a>";
+                        return a;
+                      }},
+                  {field:'contItem',title:'合同标的物',width:300,align:'right'},
+                  {field:'contPrice',title:'合同金额',width:300},
+                  {field:'contDate',title:'签订时间',width:300},
+              ]],
+          });
+      })
+
+
+      //搜索
+      function formeSearch() {
+          $('#dg').datagrid({
+              queryParams: {contNum:$('#contNum').val(),verifyDate:$('#verifyDate').val(),contDate:$('#contDate').val()}
+          });
+      }
+
+      //根据合同表id查询合同表详情
+      function ShowContra(id) {
+          location.href="/findContractAndDe?id="+id;
+      }
+
+  </script>
+
+  <div>
+    <form id="searchForm">
+      合同号：<input type="text" id="contNum" name="contNum">
+      时间：<input class="easyui-datetimebox" id="verifyDate" name="verifyDate"
+               data-options="showSeconds:false"  style="width:150px">-
+      <input class="easyui-datetimebox" name="contDate" id="contDate"
+             data-options="showSeconds:false"  style="width:150px">
+      <a id="btnSearch" href="#" class="easyui-linkbutton" onclick="formeSearch()" data-options="iconCls:'icon-search'">搜索</a>
+    </form>
+  </div>
+  <table id="dg"></table>
+</CENTER></BODY></HTML>

@@ -1,0 +1,94 @@
+<!DOCTYPE HTML>
+<html lang="en"  xmlns:th="http://www.thymeleaf.org"><head th:replace="~{public::header('aa')}"><HEAD><TITLE>选择物资</TITLE>
+<META http-equiv=Content-Language content=zh-cn>
+<META http-equiv=Content-Type content="text/html; charset=utf-8">
+<META content="MSHTML 6.00.2900.5626" name=GENERATOR>
+<META content=FrontPage.Editor.Document name=ProgId><LINK 
+href="css/style.css" rel=stylesheet>
+
+<SCRIPT language=JAVASCRIPT>
+ function delCheckbox(){
+  	var objCheckbox = document.getElementsByName("p_orderno");
+	var count=0;
+	for(var i=0;i<objCheckbox.length;i++){
+		if(objCheckbox[i].checked){
+			count++;
+			var obj=document.getElementById("table1");
+			obj.deleteRow(i+1);
+		}
+	}
+	if(count==0){
+		alert("请选择一条要删除的数据。");
+	}
+  }
+  
+  function productX() 
+  {
+  		window.open("wangyeduihakuang.htm","Canny1","toolbar=0,location=0,status=0,menubar=0,scrollbars=0,width=600,height=440,left=100,top=60");
+      
+  }
+</SCRIPT>
+
+</HEAD>
+<BODY>
+<CENTER>
+<TABLE width="90%" align=center border=0>
+  <TBODY>
+  <TR>
+    <TD align=middle><FONT 
+  color=red>选择物资</FONT>====&gt;录入需求计划====&gt;需求计划确认</TD></TR></TBODY></TABLE>
+    <script type="text/javascript" th:inline="none">
+        $(function () {
+            $('#dg').datagrid({
+                url:'/findAllMaterial',
+                method:'post',
+                pagination:true,  //分页工具栏
+                rownumbers:true,  //显示行号
+                pageSize:4,
+                pageList:[2,4,6,8,10],
+                rownumbers:false, //显示行数
+                columns:[[
+                    {field:'bb',title:'选择',width:80,formatter: function(value,row,index){
+                        var a="<input type=\"checkbox\">";
+                        return a;
+                        }},
+                    {field:'id',title:'编号',width:300},
+                    {field:'materialNum',title:'产品编码',width:420},
+                    {field:'materialName',title:'产品名称',width:420,align:'right'},
+                ]]
+            });
+        })
+
+    </script>
+
+    <table id="dg"></table>
+    <div align="center">
+    请先选择物资，然后点击：<A onclick="NextPren()">
+      <FONT size=3><U>下一步</U><a/>
+    </div>
+
+  <script>
+
+
+    //判断至少选中一行物资
+      function NextPren() {
+        //获取选中的行
+        var rows=$("#dg").datagrid('getSelections');
+        //将选中的行数组转为json
+          var rows1=JSON.stringify(rows);
+          if(rows.length>0){
+            $.ajax({
+                url:"/setSelectMaterial",
+                type:"get",
+                data:{"selectMaterial":rows1},
+                success:function () {
+                    location.href="Order_newform";
+                }
+            })
+          }else{
+              $.messager.alert('错误','最少选择一件产品');
+          }
+      }
+
+  </script>
+</CENTER></BODY></HTML>

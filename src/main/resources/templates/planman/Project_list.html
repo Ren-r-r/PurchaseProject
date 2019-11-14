@@ -1,0 +1,146 @@
+<!DOCTYPE HTML>
+<html lang="en"  xmlns:th="http://www.thymeleaf.org"><head th:replace="~{public::header('aa')}">
+  <SCRIPT language=JAVASCRIPT>
+      function prosave(){
+          window.document.location="category_save.html";
+      }
+      function mydelete(obj)
+      {
+          if(confirm("您确定删除本商品？"))
+          {
+              var myobj=obj.parentNode.parentNode.parentNode;
+              var myrow=obj.parentNode.parentNode;
+              myobj.deleteRow(myrow.rowIndex);
+          }
+      }
+  </SCRIPT>
+
+  <META http-equiv=Content-Language content=zh-cn>
+  <META http-equiv=Content-Type content="text/html; charset=utf-8">
+  <META content="MSHTML 6.00.2900.5626" name=GENERATOR>
+  <META content=FrontPage.Editor.Document name=ProgId><LINK
+        href="css/style.css" rel=stylesheet>
+</HEAD>
+<BODY>
+<CENTER>
+  <FORM name=form action="" method=post>
+    <H2><FONT color=#0070c0>采购计划一览表</FONT></H2>
+    <script type="text/javascript" th:inline="none">
+        var url;
+        $(function () {
+            $('#dg').datagrid({
+                url:'/findStockStates',
+                method:'get',
+                pagination:true,  //分页工具栏
+                rownumbers:true,  //显示行号
+                rownumbers : false,//行号
+                selectOnCheck:true,
+                singleSelect: true,
+                selectOnCheck:true,
+                rownumbers:true,
+                pageSize:4,
+                pageList:[2,4,6,8,10],
+                columns:[[
+                    {field:'bb',title:'选择',width:100,checkbox:true},
+                    {field:'STOCK_NAME',title:'采购计划名称',width:300},
+                    {field:'STOCK_TYPE',title:'采购类型',width:300,align:'right',formatter:function (value,row,index) {
+                            if(value=="C000-1"){
+                                return "公开求购";
+                            }else{
+                                return "定向询价";
+                            }
+                        }},
+                    {field:'STATUS',title:'状态',width:100,formatter:function (value,row,index) {
+                            if(value=="C001-30"){
+                                return "<p style=\"color: red\">未确定</p>";
+                            }else if(value=="C001-40"){
+                                return "<p style=\"color: blue\">待审批</p>";
+                            }
+                            else if(value=="C001-50"){
+                                return "<p style=\"color: blue\">通过</p>";
+                            }
+                            else if(value=="C001-51"){
+                                return "<p style=\"color: blue\">驳回</p>";
+                            }
+                            else if(value=="C001-60"){
+                                return "<p style=\"color: blue\">已下达</p>";
+                            }
+                        }},
+                    {field:'SUBMIT_DATE',title:'采购计划下达时间',width:300},
+                    {field:'11',title:'对应询价书',width:280},
+                ]],
+                onLoadSuccess: function () {   //隐藏表头的checkbox
+                    $("#dg").parent().find("div .datagrid-header-check").children("input[type=\"checkbox\"]").eq(0).attr("style", "display:none;");
+                },
+            });
+        })
+        //搜索
+        function formeSearch() {
+            $('#dg').datagrid({
+                queryParams: {stockName:$('#stockName').val(),stockType:$('#stockType').val(),status:$('#status').val()}
+            });
+        }
+
+    </script>
+    <div>
+      <form id="searchForm">
+        采购计划名称：<input type="text" id="stockName" name="stockName">
+        计划状态:<select id="status"  class="easyui-combobox" style="width: 200px;">
+        <option value="">全部</option>
+        <option value="C001-30">未确定</option>
+        <option value="C001-40">待审批</option>
+        <option value="C001-50">通过</option>
+        <option value="C001-51">驳回</option>
+        <option value="C001-60">已下达</option>
+      </select>
+        采购类型:<select id="stockType"  class="easyui-combobox" style="width: 200px;">
+        <option value="">全部</option>
+        <option value="C000-1">公开求购</option>
+        <option value="C000-2">定向询价</option>
+      </select>
+        <a id="btnSearch" href="#" class="easyui-linkbutton" onclick="formeSearch()" data-options="iconCls:'icon-search'">搜索</a>
+      </form>
+    </div>
+    <table id="dg"></table>
+
+    <a id="Next" href="#" class="easyui-linkbutton" onclick="next()">报批</a>
+    <a  href="#" class="easyui-linkbutton" onclick="items()" >详细</a>
+
+    <script>
+
+      //详细
+        function items() {
+            var row= $("#dg").datagrid("getSelections");
+            if(row.length>0){
+                var rows=$("#dg").datagrid("getSelected");
+                location.href="/findStockAndOrder?id="+rows.ID+"&oid="+rows.ORDER_ID;
+            }else{
+                $.messager.alert("系统信息","至少选择一行");
+            }
+
+        }
+
+      //报批
+      function next() {
+          var row= $("#dg").datagrid("getSelections");
+          if(row.length>0){
+              if(confirm("报批后采购计划进行审批流程！状态为待审批")){
+              var rows=$("#dg").datagrid("getSelected");
+              $.ajax({
+                  url:"/updateIdMappingState",
+                  type:"get",
+                  data:"id="+rows.iID,
+                  success:function (data) {
+                      //刷新数据表格
+                      $('#dg').datagrid('reload');
+                  }
+              })
+                }
+          }else{
+              $.messager.alert("系统信息","至少选择一行");
+          }
+
+      }
+
+    </script>
+</BODY></HTML>

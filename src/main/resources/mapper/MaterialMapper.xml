@@ -1,0 +1,291 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.ryz.mapper.MaterialMapper" >
+  <resultMap id="BaseResultMap" type="com.ryz.entity.Material" >
+    <id column="ID" property="id" jdbcType="BIGINT" />
+    <result column="MATERIAL_NUM" property="materialNum" jdbcType="VARCHAR" />
+    <result column="MATERIAL_NAME" property="materialName" jdbcType="VARCHAR" />
+    <result column="MATERIAL_UNIT" property="materialUnit" jdbcType="VARCHAR" />
+    <result column="MATERIAL_TYPE" property="materialType" jdbcType="VARCHAR" />
+    <result column="MATERIAL_AM" property="materialAm" jdbcType="INTEGER" />
+    <result column="MATERIAL_PRICE" property="materialPrice" jdbcType="DECIMAL" />
+    <result column="MATERIAL_DESC" property="materialDesc" jdbcType="VARCHAR" />
+    <result column="USER_ID" property="userId" jdbcType="INTEGER" />
+    <result column="SUPPLIER_ID" property="supplierId" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Example_Where_Clause" >
+    <where >
+      <foreach collection="oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause" >
+    <where >
+      <foreach collection="example.oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List" >
+    ID, MATERIAL_NUM, MATERIAL_NAME, MATERIAL_UNIT, MATERIAL_TYPE, MATERIAL_AM, MATERIAL_PRICE, 
+    MATERIAL_DESC, USER_ID, SUPPLIER_ID
+  </sql>
+  <select id="selectByExample" resultMap="BaseResultMap" parameterType="com.ryz.entity.MaterialExample" >
+    select
+    <if test="distinct" >
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    from material
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null" >
+      order by ${orderByClause}
+    </if>
+  </select>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+    select 
+    <include refid="Base_Column_List" />
+    from material
+    where ID = #{id,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
+    delete from material
+    where ID = #{id,jdbcType=BIGINT}
+  </delete>
+  <delete id="deleteByExample" parameterType="com.ryz.entity.MaterialExample" >
+    delete from material
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="com.ryz.entity.Material" >
+    insert into material (ID, MATERIAL_NUM, MATERIAL_NAME, 
+      MATERIAL_UNIT, MATERIAL_TYPE, MATERIAL_AM, 
+      MATERIAL_PRICE, MATERIAL_DESC, USER_ID, 
+      SUPPLIER_ID)
+    values (#{id,jdbcType=BIGINT}, #{materialNum,jdbcType=VARCHAR}, #{materialName,jdbcType=VARCHAR}, 
+      #{materialUnit,jdbcType=VARCHAR}, #{materialType,jdbcType=VARCHAR}, #{materialAm,jdbcType=INTEGER}, 
+      #{materialPrice,jdbcType=DECIMAL}, #{materialDesc,jdbcType=VARCHAR}, #{userId,jdbcType=INTEGER}, 
+      #{supplierId,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.ryz.entity.Material" >
+    insert into material
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        ID,
+      </if>
+      <if test="materialNum != null" >
+        MATERIAL_NUM,
+      </if>
+      <if test="materialName != null" >
+        MATERIAL_NAME,
+      </if>
+      <if test="materialUnit != null" >
+        MATERIAL_UNIT,
+      </if>
+      <if test="materialType != null" >
+        MATERIAL_TYPE,
+      </if>
+      <if test="materialAm != null" >
+        MATERIAL_AM,
+      </if>
+      <if test="materialPrice != null" >
+        MATERIAL_PRICE,
+      </if>
+      <if test="materialDesc != null" >
+        MATERIAL_DESC,
+      </if>
+      <if test="userId != null" >
+        USER_ID,
+      </if>
+      <if test="supplierId != null" >
+        SUPPLIER_ID,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=BIGINT},
+      </if>
+      <if test="materialNum != null" >
+        #{materialNum,jdbcType=VARCHAR},
+      </if>
+      <if test="materialName != null" >
+        #{materialName,jdbcType=VARCHAR},
+      </if>
+      <if test="materialUnit != null" >
+        #{materialUnit,jdbcType=VARCHAR},
+      </if>
+      <if test="materialType != null" >
+        #{materialType,jdbcType=VARCHAR},
+      </if>
+      <if test="materialAm != null" >
+        #{materialAm,jdbcType=INTEGER},
+      </if>
+      <if test="materialPrice != null" >
+        #{materialPrice,jdbcType=DECIMAL},
+      </if>
+      <if test="materialDesc != null" >
+        #{materialDesc,jdbcType=VARCHAR},
+      </if>
+      <if test="userId != null" >
+        #{userId,jdbcType=INTEGER},
+      </if>
+      <if test="supplierId != null" >
+        #{supplierId,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <select id="countByExample" parameterType="com.ryz.entity.MaterialExample" resultType="java.lang.Integer" >
+    select count(*) from material
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByExampleSelective" parameterType="map" >
+    update material
+    <set >
+      <if test="record.id != null" >
+        ID = #{record.id,jdbcType=BIGINT},
+      </if>
+      <if test="record.materialNum != null" >
+        MATERIAL_NUM = #{record.materialNum,jdbcType=VARCHAR},
+      </if>
+      <if test="record.materialName != null" >
+        MATERIAL_NAME = #{record.materialName,jdbcType=VARCHAR},
+      </if>
+      <if test="record.materialUnit != null" >
+        MATERIAL_UNIT = #{record.materialUnit,jdbcType=VARCHAR},
+      </if>
+      <if test="record.materialType != null" >
+        MATERIAL_TYPE = #{record.materialType,jdbcType=VARCHAR},
+      </if>
+      <if test="record.materialAm != null" >
+        MATERIAL_AM = #{record.materialAm,jdbcType=INTEGER},
+      </if>
+      <if test="record.materialPrice != null" >
+        MATERIAL_PRICE = #{record.materialPrice,jdbcType=DECIMAL},
+      </if>
+      <if test="record.materialDesc != null" >
+        MATERIAL_DESC = #{record.materialDesc,jdbcType=VARCHAR},
+      </if>
+      <if test="record.userId != null" >
+        USER_ID = #{record.userId,jdbcType=INTEGER},
+      </if>
+      <if test="record.supplierId != null" >
+        SUPPLIER_ID = #{record.supplierId,jdbcType=VARCHAR},
+      </if>
+    </set>
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map" >
+    update material
+    set ID = #{record.id,jdbcType=BIGINT},
+      MATERIAL_NUM = #{record.materialNum,jdbcType=VARCHAR},
+      MATERIAL_NAME = #{record.materialName,jdbcType=VARCHAR},
+      MATERIAL_UNIT = #{record.materialUnit,jdbcType=VARCHAR},
+      MATERIAL_TYPE = #{record.materialType,jdbcType=VARCHAR},
+      MATERIAL_AM = #{record.materialAm,jdbcType=INTEGER},
+      MATERIAL_PRICE = #{record.materialPrice,jdbcType=DECIMAL},
+      MATERIAL_DESC = #{record.materialDesc,jdbcType=VARCHAR},
+      USER_ID = #{record.userId,jdbcType=INTEGER},
+      SUPPLIER_ID = #{record.supplierId,jdbcType=VARCHAR}
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKeySelective" parameterType="com.ryz.entity.Material" >
+    update material
+    <set >
+      <if test="materialNum != null" >
+        MATERIAL_NUM = #{materialNum,jdbcType=VARCHAR},
+      </if>
+      <if test="materialName != null" >
+        MATERIAL_NAME = #{materialName,jdbcType=VARCHAR},
+      </if>
+      <if test="materialUnit != null" >
+        MATERIAL_UNIT = #{materialUnit,jdbcType=VARCHAR},
+      </if>
+      <if test="materialType != null" >
+        MATERIAL_TYPE = #{materialType,jdbcType=VARCHAR},
+      </if>
+      <if test="materialAm != null" >
+        MATERIAL_AM = #{materialAm,jdbcType=INTEGER},
+      </if>
+      <if test="materialPrice != null" >
+        MATERIAL_PRICE = #{materialPrice,jdbcType=DECIMAL},
+      </if>
+      <if test="materialDesc != null" >
+        MATERIAL_DESC = #{materialDesc,jdbcType=VARCHAR},
+      </if>
+      <if test="userId != null" >
+        USER_ID = #{userId,jdbcType=INTEGER},
+      </if>
+      <if test="supplierId != null" >
+        SUPPLIER_ID = #{supplierId,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where ID = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.ryz.entity.Material" >
+    update material
+    set MATERIAL_NUM = #{materialNum,jdbcType=VARCHAR},
+      MATERIAL_NAME = #{materialName,jdbcType=VARCHAR},
+      MATERIAL_UNIT = #{materialUnit,jdbcType=VARCHAR},
+      MATERIAL_TYPE = #{materialType,jdbcType=VARCHAR},
+      MATERIAL_AM = #{materialAm,jdbcType=INTEGER},
+      MATERIAL_PRICE = #{materialPrice,jdbcType=DECIMAL},
+      MATERIAL_DESC = #{materialDesc,jdbcType=VARCHAR},
+      USER_ID = #{userId,jdbcType=INTEGER},
+      SUPPLIER_ID = #{supplierId,jdbcType=VARCHAR}
+    where ID = #{id,jdbcType=BIGINT}
+  </update>
+</mapper>

@@ -1,0 +1,33 @@
+server:
+  port: 8080
+#\u914D\u7F6E\u6570\u636E\u6E90\u9ED8\u8BA4\u4F7F\u7528tomcat\u6570\u636E\u6E90
+spring:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    username: root
+    password: root
+    url: jdbc:mysql://127.0.0.1:3306/purchase?useUnicode=true&characterEncoding=utf-8&serverTimezone=GMT%2B8
+  thymeleaf:
+    cache: false
+    prefix:
+      classpath: /templates   # 访问template下的html文件需要配置模板，映射
+  mvc:
+    date-format: yyyy-MM-dd
+  jackson:
+    date-format: yyyy-MM-dd
+    time-zone: GMT+8
+  freemarker:
+    check-template-location: true
+#\u914D\u7F6Emybatis\u5FC5\u8981\u9879
+mybatis:
+  mapper-locations: classpath:mapper/*.xml
+  type-aliases-package: com.ryz.entity
+pagehelper:
+  helper-dialect: mysql
+  reasonable: true
+  support-methods-arguments: true
+  params: count=countSql
+
+logging:
+  level:
+    com.ryz.mapper: debug

@@ -1,0 +1,190 @@
+<!DOCTYPE HTML>
+<html lang="en"  xmlns:th="http://www.thymeleaf.org"><head th:replace="~{public::header('aa')}">
+<SCRIPT language=JAVASCRIPT> 
+function prosave(){
+	window.document.location="category_save.html";
+}
+function mydelete(obj)
+{
+	if(confirm("您确定删除本商品？"))
+	{	
+		var myobj=obj.parentNode.parentNode.parentNode;
+		var myrow=obj.parentNode.parentNode;
+		myobj.deleteRow(myrow.rowIndex);
+	}
+}
+</SCRIPT>
+ 
+<META http-equiv=Content-Language content=zh-cn>
+<META http-equiv=Content-Type content="text/html; charset=utf-8">
+<META content="MSHTML 6.00.2900.5626" name=GENERATOR>
+<META content=FrontPage.Editor.Document name=ProgId><LINK
+href="css/style.css" rel=stylesheet>
+</HEAD>
+<BODY>
+<CENTER>
+<FORM name=form action="" method=post>
+<H2><FONT color=#0070c0>供应商材料类型维护</FONT></H2>
+    <script type="text/javascript" th:inline="none">
+        var url;
+        $(function () {
+            $('#dg').datagrid({
+                url:'/showType',
+                method:'post',
+                pagination:true,  //分页工具栏
+                rownumbers:true,  //显示行号
+                pageList:[2,4,6,8,10],
+                columns:[[
+                    {field:'id',title:'编号',width:250,hidden:true},
+                    {field:'cNumMaterialType',title:'类型编码',width:250},
+                    {field:'cName',title:'类型名称',width:250,align:'right'},
+                    {field:'cTypeDec',title:'类别描述',width:250},
+                ]],
+                toolbar: [{    //工具条
+                    text:'添加',
+                    iconCls: 'icon-add',
+                    handler: function(){
+                        //打开对话框，并修改标题
+                        $('#dlg').dialog('open').dialog('setTitle','添加');
+                        //清空表单
+                        $('#Mat_add_form').form('clear');
+                        //设置添加的控制器地址
+                        url = '/addType';
+                    }
+                },'-',{
+                    text:'修改',
+                    iconCls: 'icon-edit',
+                    handler: function(){
+                        //是否选择一行
+                        var row = $('#dg').datagrid('getSelected');
+                        //判断如果选择了一行
+                        if (row){
+                            //打开对话框
+                            $('#dlg').dialog('open').dialog('setTitle','修改产品信息');
+                            //往表单中加载选中行的数据
+                            $('#Mat_add_form').form('load',row);
+                            //设置修改的控制器地址
+                            url = '/updaType';
+                        }else{
+                            $.messager.alert('警告','请选择一行');
+                        }
+                    }
+                },'-',{
+                    text:'删除',
+                    iconCls: 'icon-cancel',
+                    handler: function(){
+                        destroyEmp();
+                    }
+                }]
+            });
+        })
+
+        //添加
+        function saveOrUpdateEmp() {
+            $('#Mat_add_form').form('submit',{
+                url: url,
+                onSubmit: function(){
+                    return $(this).form('validate');
+                },
+                success: function(result){
+                    //判断服务器返回结果
+                    if(result == "success"){
+                        //提示添加成功
+                        $.messager.show({
+                            title:'系统消息',
+                            msg:'更新成功.',
+                            timeout:3000,
+                            showType:'slide'
+                        });
+
+                        //关闭对话框
+                        $("#dlg").dialog("close");
+
+                        //刷新数据表格
+                        $("#dg").datagrid("reload")
+
+                    }
+                }
+            });
+        }
+
+        //删除
+        function destroyEmp(){
+            //获取选中的行
+            if($("#dg").datagrid("getSelections").length>0){
+                var row=$("#dg").datagrid("getSelected");
+                url="/deleType?cId="+row.cId;
+                $.messager.confirm('消息','确定要删除吗？',function (r) {
+                    if(r){
+                        $.ajax({
+                            url:url,
+                            type:'post',
+                            success:function (json) {
+                                if(json=="success"){
+                                    //刷新数据
+                                    $("#dg").datagrid("reload");
+                                    $.messager.show({
+                                        title:'系统消息',
+                                        msg:'删除成功',
+                                        timeout:3000,
+                                        showType:'slide'
+                                    });
+                                }
+                            },
+                            error:function () {
+                                $.messager.show({
+                                    title:'系统消息',
+                                    msg:'删除失败',
+                                    timeout:3000,
+                                    showType:'slide'
+                                });
+                            }
+                        });
+                    }
+                });
+
+            }else{
+                $.messager.alert("系统信息","至少选择一行");
+            }
+        }
+
+        //搜索
+        function formeSearch() {
+            $('#dg').datagrid({
+                queryParams: {cNumMaterialType:$('#cNumMaterialType').val(),cName:$('#cName').val()}
+            });
+        }
+
+    </script>
+
+    <div>
+        <form id="searchForm">
+            类型编号：<input type="text" id="cNumMaterialType" name="cNumMaterialType">
+            类型名称：<input type="text" id="cName" name="cName">
+            <a id="btnSearch" href="#" class="easyui-linkbutton" onclick="formeSearch()" data-options="iconCls:'icon-search'">搜索</a>
+        </form>
+    </div>
+    <table id="dg"></table>
+    <div id="dlg" class="easyui-dialog" style="width:400px;height:480px;padding:10px 20px"
+         closed="true" buttons="#dlg-buttons">
+        <div class="ftitle">添加商材料类型</div>
+        <form id="Mat_add_form" method="post" novalidate>
+            <input type="hidden" name="id">
+            <div class="fitem">
+                <label>类型编码：</label>
+                <input name="cNumMaterialType" class="easyui-textbox" required="true">
+            </div>
+            <div class="fitem">
+                <label>类型名称：</label>
+                <input name="cName" class="easyui-textbox">
+            </div>
+            <div class="fitem">
+                <label>类别描述：</label>
+                <input name="cTypeDec" class="easyui-textbox">
+            </div>
+        </form>
+    </div>
+    <div id="dlg-buttons">
+        <a href="javascript:void(0)" class="easyui-linkbutton c6" iconCls="icon-ok" onclick="saveOrUpdateEmp()" style="width:90px">保存</a>
+        <a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-cancel" onclick="javascript:$('#dlg').dialog('close')" style="width:90px">取消</a>
+    </div></CENTER></CENTER></BODY></HTML>
